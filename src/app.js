@@ -7,7 +7,7 @@ const error404 = require('./middleware/404');
 const { detectConnection, sequelize } = require('./config/orm');
 const app = express();
 
-app.use(express.static('/public')); //全局设置静态文件目录路劲
+app.use([express.json(), express.static('/public')]); //全局设置静态文件目录路劲
 
 app.use([bodyParser.urlencoded({ extended: false }), bodyParser.json()]);
 

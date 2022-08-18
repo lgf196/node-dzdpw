@@ -1,4 +1,4 @@
-const { responseData, statusCode, asynchronous } = require('../utils');
+const { responseData, statusCode, asynchronous, getRouteParm } = require('../utils');
 const { db } = require('../config');
 const User_login = require('../models/login');
 const { ModelOption } = require('../controller/model');
@@ -20,12 +20,12 @@ exports.getUserList = async (req, res, next) => {
   ];
   res.status(200).json(responseData(statusCode.success, await asynchronous(list)));
 };
-exports.find = async (req, res, next) => {
-  modelOption.find((list) => {
-    res.status(200).json(responseData(statusCode.success, null));
+exports.find = async ({ req, res, next }, { model, values, options }) => {
+  model.findAll(options).then((list) => {
+    res.status(200).json(responseData(statusCode.success, list));
   });
 };
-exports.add = async (req, res, next) => {
+exports.add = async ({ req, res, next }, { model, values, options }) => {
   // User_login.create({
   //   name: 'lgf',
   //   title: Math.random() * 100,
@@ -33,16 +33,25 @@ exports.add = async (req, res, next) => {
   // }).then(() => {
   //   res.status(200).json(responseData(statusCode.success, null));
   // });
-  modelOption.add(
-    {
-      name: 'lgf',
-      title: Math.random() * 100,
-      des: 'dedededed',
-    },
-    (list) => {
-      res.status(200).json(responseData(statusCode.success, null));
-    },
-  );
+  // modelOption.add(
+  //   {
+  //     name: 'lgf',
+  //     title: Math.random() * 100,
+  //     des: 'dedededed',
+  //   },
+  //   (list) => {
+  //     res.status(200).json(responseData(statusCode.success, null));
+  //   },
+  // );
+  if (!getRouteParm(req)) {
+    console.log('11111', 11111);
+    res.status(200).json(responseData(statusCode.fail, null, '接收字段不能为空！'));
+    return;
+  }
+  console.log('3333', 3333);
+  model.create(getRouteParm(req), options).then((list) => {
+    res.status(200).json(responseData(statusCode.success, null));
+  });
 };
 exports.delte = async (req, res, next) => {
   User_login.destroy({

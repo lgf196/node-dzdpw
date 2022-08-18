@@ -32,3 +32,17 @@ exports.responseData = (code, data, mes) => {
 exports.asynchronous = (data) => {
   return Promise.resolve(data);
 };
+
+/**
+ * @description 处理接收post/get路由参数
+ */
+exports.getRouteParm = (req) => {
+  let par = {};
+  if (req.method === 'GET') {
+    par = req.query;
+  }
+  if (req.method === 'POST') {
+    par = req.body;
+  }
+  return par;
+};

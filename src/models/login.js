@@ -8,5 +8,4 @@ const User_login = sequelize.define('user_login', {
   title: DataTypes.STRING,
   des: DataTypes.STRING,
 });
-
 module.exports = User_login;
