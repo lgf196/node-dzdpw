@@ -1,6 +1,6 @@
 const { sequelize } = require('../config/orm.js');
 
-export const registerModel = (tableName, modelName, fields) => {
+exports.registerModel = (tableName, modelName, fields) => {
   const model = sequelize.define(
     modelName,
     {

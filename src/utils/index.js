@@ -17,7 +17,7 @@ exports.statusCode = {
  * @param {String} mes 描述
  * @returns {Object} {code, data, mes}
  */
-exports.responseData = (code, data, mes) => {
+exports.responseData = (code, data = null, mes) => {
   return {
     code,
     data,
@@ -45,4 +45,32 @@ exports.getRouteParm = (req) => {
     par = req.body;
   }
   return par;
+};
+
+/**
+ * @description 判断json对象是否为空
+ */
+exports.isJsonNull = (obj) => {
+  if (!Object.keys(obj).length) {
+    return true;
+  }
+  return false;
+};
+/**
+ * @description 判断一个值是否是数组
+ * @param {*} obj 要检查的值
+ */
+exports.isArray = (obj) => {
+  return obj !== undefined && obj !== null && obj.constructor === Array;
+};
+/**
+ * @description 判断一个值是否是对象
+ * @param {*} obj 要检查的值
+ */
+exports.isObject = (obj) => {
+  return obj !== undefined && obj !== null && obj.constructor === Object;
+};
+
+exports.awaitWrap = (promise) => {
+  return promise.then((res) => [null, res]).catch((err) => [err, null]);
 };

@@ -1,8 +1,9 @@
-const { responseData, statusCode, asynchronous, getRouteParm } = require('../utils');
+const { responseData, statusCode, asynchronous, getRouteParm, isJsonNull } = require('../utils');
 const { db } = require('../config');
+const { sequelize } = require('../config/orm.js');
 const User_login = require('../models/login');
-const { ModelOption } = require('../controller/model');
-const modelOption = new ModelOption(User_login);
+
+const queryInterface = sequelize.getQueryInterface();
 exports.getUserList = async (req, res, next) => {
   console.log('res', req.query, req.body);
   console.log('数据库信息====>>', db());
@@ -21,11 +22,67 @@ exports.getUserList = async (req, res, next) => {
   res.status(200).json(responseData(statusCode.success, await asynchronous(list)));
 };
 exports.find = async ({ req, res, next }, { model, values, options }) => {
-  model.findAll(options).then((list) => {
-    res.status(200).json(responseData(statusCode.success, list));
-  });
+  const parm = getRouteParm(req);
+  // model.findAll(options).then((list) => {
+  //   res.status(200).json(responseData(statusCode.success, list));
+  // });
+
+  queryInterface
+    .bulkInsert('user_login', [
+      {
+        name: '武汉',
+        // createdAt: new Date(),
+        // updatedAt: new Date(),
+      },
+    ])
+    .then(() => {
+      res.status(200).json(responseData(statusCode.success));
+    });
+
+  // sequelize.queryInterface.bulkInsert(
+  //   'user_login',
+  //   [
+  //     {
+  //       id: 13,
+  //       name: '我爱你',
+  //       // createdAt: new Date(),
+  //       // updatedAt: new Date(),
+  //     },
+  //   ],
+  //   {
+  //     updateOnDuplicate: ['name'],
+  //   },
+  // );
+
+  // sequelize.queryInterface.bulkDelete('user_login', {
+  //   id: [7, 8],
+  // });
+
+  // sequelize.queryInterface.bulkUpdate(
+  //   'user_login',
+  //   {
+  //     name: 'user111',
+  //   },
+  //   {
+  //     id: 13,
+  //   },
+  // );
+
+  // sequelize
+  //   .query(`SELECT * FROM  user_login WHERE id =${parm.id} OR name like '%${parm.name}%'`)
+  //   .then((result) => {
+  //     const [results, metadata] = result;
+  //     res.status(200).json(responseData(statusCode.success, metadata));
+  //   });
+  // res.status(200).json(responseData(statusCode.success, metadata));
+
+  // sequelize.query(`SELECT * FROM  user_login`).then((result) => {
+  //   const [results, metadata] = result;
+  //   res.status(200).json(responseData(statusCode.success, metadata));
+  // });
 };
 exports.add = async ({ req, res, next }, { model, values, options }) => {
+  const parm = getRouteParm(req);
   // User_login.create({
   //   name: 'lgf',
   //   title: Math.random() * 100,
@@ -43,24 +100,25 @@ exports.add = async ({ req, res, next }, { model, values, options }) => {
   //     res.status(200).json(responseData(statusCode.success, null));
   //   },
   // );
-  if (!getRouteParm(req)) {
-    console.log('11111', 11111);
-    res.status(200).json(responseData(statusCode.fail, null, '接收字段不能为空！'));
-    return;
+  if (isJsonNull(parm)) {
+    next({ statusCode: 400, message: '接收字段不能为空！' });
+  } else {
+    model.create(parm, options).then((list) => {
+      res.status(200).json(responseData(statusCode.success, null));
+    });
   }
-  console.log('3333', 3333);
-  model.create(getRouteParm(req), options).then((list) => {
-    res.status(200).json(responseData(statusCode.success, null));
-  });
 };
-exports.delte = async (req, res, next) => {
-  User_login.destroy({
-    where: {
-      id: 4,
-    },
-  }).then(() => {
+exports.delte = async ({ req, res, next }, { model, values, options }) => {
+  model.destroy(options).then((list) => {
     res.status(200).json(responseData(statusCode.success, null));
   });
+  // User_login.destroy({
+  //   where: {
+  //     id: 4,
+  //   },
+  // }).then(() => {
+  //   res.status(200).json(responseData(statusCode.success, null));
+  // });
 };
 exports.update = async (req, res, next) => {
   User_login.update(
