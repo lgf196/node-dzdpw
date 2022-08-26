@@ -70,7 +70,27 @@ exports.isArray = (obj) => {
 exports.isObject = (obj) => {
   return obj !== undefined && obj !== null && obj.constructor === Object;
 };
-
+/**
+ * @description 处理await/async的错误
+ * @param {Promise} promise promise对象
+ */
 exports.awaitWrap = (promise) => {
   return promise.then((res) => [null, res]).catch((err) => [err, null]);
+};
+
+/**
+ * @description 将搜索字段对象转为对应的sql语句
+ */
+exports.convertSql = (values) => {
+  let sql = '',
+    or = ' OR ';
+  const keyArr = Object.keys(values) || [];
+  const value = Object.values(values) || [];
+  keyArr.forEach((item, index) => {
+    sql += `${item}=?${keyArr.length - 1 !== index ? or : ''}`;
+  });
+  return {
+    sql,
+    value,
+  };
 };

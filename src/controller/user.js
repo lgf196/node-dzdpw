@@ -1,8 +1,8 @@
 const { responseData, statusCode, asynchronous, getRouteParm, isJsonNull } = require('../utils');
 const { db } = require('../config');
 const { sequelize } = require('../config/orm.js');
+const { add } = require('../controller/model');
 const User_login = require('../models/login');
-
 const queryInterface = sequelize.getQueryInterface();
 exports.getUserList = async (req, res, next) => {
   console.log('res', req.query, req.body);
@@ -21,7 +21,19 @@ exports.getUserList = async (req, res, next) => {
   ];
   res.status(200).json(responseData(statusCode.success, await asynchronous(list)));
 };
-exports.find = async ({ req, res, next }, { model, values, options }) => {
+
+exports.addMore = async (req, res, next) => {
+  const arr = [];
+  for (let index = 0; index < 800; index++) {
+    arr.push({ name: index, title: index });
+  }
+  if (arr.length) {
+    let result = await add('user_login', arr);
+    res.status(200).json(responseData(statusCode.success, null));
+  }
+};
+
+/*exports.find = async ({ req, res, next }, { model, values, options }) => {
   const parm = getRouteParm(req);
   // model.findAll(options).then((list) => {
   //   res.status(200).json(responseData(statusCode.success, list));
@@ -133,4 +145,4 @@ exports.update = async (req, res, next) => {
   ).then(() => {
     res.status(200).json(responseData(statusCode.success, null));
   });
-};
+};*/

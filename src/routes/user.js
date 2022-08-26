@@ -1,28 +1,21 @@
-const { getUserList, add, delte, update, find } = require('../controller/user');
-const User_login = require('../models/login');
+const { getUserList, addMore } = require('../controller/user');
+const interceptor = require('../middleware/interceptor');
 const { Router } = require('express');
 const { getRouteParm } = require('../utils');
-const { addInsert, delteInsert, updateInsert } = require('../controller/model');
+const {
+  addInsert,
+  delteInsert,
+  updateInsert,
+  idsQueryInsert,
+  findAllInsert,
+} = require('../controller/model');
 const router = Router();
+
 router.get('/getUserList', getUserList);
-router.post('/add', addInsert);
-router.post('/delte', delteInsert);
-router.post('/update', updateInsert);
-router.post('/find', (req, res, next) =>
-  find(
-    {
-      req,
-      res,
-      next,
-    },
-    {
-      model: User_login,
-      options: {
-        where: {
-          id: getRouteParm(req).id,
-        },
-      },
-    },
-  ),
-);
+router.post('/add/moreList', addMore);
+router.post('/add/:tableName', interceptor, addInsert);
+router.post('/delte/:tableName', interceptor, delteInsert);
+router.post('/update/:tableName', interceptor, updateInsert);
+router.post('/find/:tableName', interceptor, idsQueryInsert);
+router.post('/findAll/:tableName', interceptor, findAllInsert);
 module.exports = router;
