@@ -1,3 +1,1 @@
-exports.userRouter = require("./user");
-
-exports.productRouter = require("./product");
+exports.commonRouter = require('./common');
