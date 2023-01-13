@@ -11,7 +11,6 @@ app.use('/', express.static('public')); //全局设置静态文件目录路劲
 app.use([express.json()]);
 
 app.use([bodyParser.urlencoded({ extended: false }), bodyParser.json()]);
-
 app.use('/api', [commonRouter]);
 app.use([error404, errorHandler]);
 app.listen(servePort, () => {
